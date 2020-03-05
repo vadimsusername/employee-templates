@@ -1,16 +1,9 @@
 const Manager = require("./lib/Manager");
-const inquirer = require("inquirer");
-/*const Engineer = require("./lib/Engineer");
+const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-
-const path = require("path");
-const fs = require("fs");
-const OUTPUT_DIR = path.resolve(__dirname, "output");
-const outputPath = path.join(OUTPUT_DIR, "team.html");
-​*/
 const render = require("./lib/htmlRenderer");
+const inquirer = require("inquirer");
 
-//const promptJSON = "[]"
 const employeePrompt = [
     {
         type: "input",
@@ -40,77 +33,7 @@ engineerPrompt.push({type:"input",message:"Enter GitHub username: ",name:"github
 var internPrompt = JSON.parse(employeePromptJSON);
 internPrompt.push({type:"input",message:"Enter interns university: ",name:"school"});
 //console.log(internPrompt);
-/*
-const managerPrompt = [
-    {
-        type: "input",
-        message: "Enter name: ",
-        name: "name"
-    },
-    {
-        type: "input",
-        message: "Enter ID number: ",
-        name: "id"
-    },
-    {
-        type: "input",
-        message: "Enter email: ",
-        name: "email"
-    },
-    {
-        type: "input",
-        message: "Enter office number: ",
-        name: "office"
-    }
-];
 
-
-const engineerPrompt = [
-    {
-        type: "input",
-        message: "Enter name: ",
-        name: "name"
-    },
-    {
-        type: "input",
-        message: "Enter ID number: ",
-        name: "id"
-    },
-    {
-        type: "input",
-        message: "Enter email: ",
-        name: "email"
-    },
-    {
-        type: "input",
-        message: "Enter GitHub username: ",
-        name: "github"
-    }
-];
-
-const internPrompt = [
-    {
-        type: "input",
-        message: "Enter name: ",
-        name: "name"
-    },
-    {
-        type: "input",
-        message: "Enter ID number: ",
-        name: "id"
-    },
-    {
-        type: "input",
-        message: "Enter email: ",
-        name: "email"
-    },
-    {
-        type: "input",
-        message: "Enter university: ",
-        name: "school"
-    }
-];
-*/
 const rolePrompt = [
     {
         type: "list",
@@ -129,12 +52,15 @@ const addEmpPrompt = [
 ]
 
 var employees = [];
+var addAnother = true;
 
-    inquirer.prompt(rolePrompt).then(answers => {
-        var role = answers.role;
-        console.log(role);
+(async ()=> {
+  do{
+    await inquirer.prompt(rolePrompt).then(answers => {
+          var role = answers.role;
+          console.log(role);
         
-        switch(role){
+          switch(role){
             case "Manager":
                 return inquirer.prompt(managerPrompt);
                 break;
@@ -145,9 +71,9 @@ var employees = [];
                 return inquirer.prompt(internPrompt);
                 break;
             default:
-                console.log("Switch default case");
-        }
-    }).then(answers => {
+                console.log("Error choosing role");
+          }
+      }).then(answers => {
         console.log("In second prompt answers");
         /*
         console.log(answers);
@@ -158,25 +84,33 @@ var employees = [];
         */
        var empObj;
        var lastProperty = Object.keys(answers)[3];
-       
+       var employee;
         switch(lastProperty){
             case "office":
                 console.log("Manager role answers");
+                employee = new Manager(answers.name,answers.id,answers.email,answers.office);
+                employees.push(employee);
                 break;
             case "github":
                 console.log("Engineer role answers");
+                employee = new Engineer(answers.name,answers.id,answers.email,answers.github);
+                employees.push(employee);
                break;
             case "school":
                 console.log("Intern role answers");
+                employee = new Intern(answers.name,answers.id,answers.email,answers.school);
+                employees.push(employee);
                 break;
             default:
-                console.log("Second switch default case");
+                console.log("Error getting answers");
         }
-      
+        return inquirer.prompt(addEmpPrompt);
+    }).then(answer => {
+        addAnother = answer.addEmployee;
     });
-  
-/*
-    empObj = new Manager(answers.name,answers.id,answers.email,answers.office);
-    console.log(empObj);
-    employees.push(empObj);
-    */
+  }while(addAnother);
+  console.log(employees);
+  var roster = render(employees);
+  console.log(roster)
+})();
+
