@@ -62,7 +62,7 @@ var addAnother = true;
   do{
     await inquirer.prompt(rolePrompt).then(answers => {
           var role = answers.role;
-          console.log(role);
+          //console.log(role);
         
           switch(role){
             case "Manager":
@@ -78,7 +78,7 @@ var addAnother = true;
                 console.log("Error choosing role");
           }
       }).then(answers => {
-        console.log("In second prompt answers");
+        //console.log("In second prompt answers");
         /*
         console.log(answers);
         var properties = Object.keys(answers);
@@ -91,17 +91,17 @@ var addAnother = true;
        var employee;
         switch(lastProperty){
             case "office":
-                console.log("Manager role answers");
+                //console.log("Manager role answers");
                 employee = new Manager(answers.name,answers.id,answers.email,answers.office);
                 employees.push(employee);
                 break;
             case "github":
-                console.log("Engineer role answers");
+                //console.log("Engineer role answers");
                 employee = new Engineer(answers.name,answers.id,answers.email,answers.github);
                 employees.push(employee);
                break;
             case "school":
-                console.log("Intern role answers");
+                //console.log("Intern role answers");
                 employee = new Intern(answers.name,answers.id,answers.email,answers.school);
                 employees.push(employee);
                 break;
@@ -113,9 +113,10 @@ var addAnother = true;
         addAnother = answer.addEmployee;
     });
   }while(addAnother);
-  console.log(employees);
+  //console.log(employees);
   var roster = render(employees);
   console.log(roster)
+  
   if (!fs.existsSync(OUTPUT_DIR)){
     fs.mkdirSync(OUTPUT_DIR);
   }
@@ -125,5 +126,6 @@ var addAnother = true;
       }
       console.log('Saved!');    
   })
+  
 })();
 
